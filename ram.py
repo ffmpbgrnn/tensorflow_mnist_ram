@@ -10,7 +10,7 @@ import math
 dataset = tf_mnist_loader.read_data_sets("mnist_data")
 save_dir = "save-3scales/"
 save_prefix = "save"
-start_step = 10000
+start_step = 0
 load_path = None
 # load_path = save_dir + save_prefix + str(start_step) + ".ckpt"
 
