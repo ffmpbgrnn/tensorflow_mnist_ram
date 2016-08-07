@@ -17,7 +17,7 @@ load_path = None
 # to enable visualization, set draw to True
 eval_only = False
 animate = True
-draw = True
+draw = False
 
 minRadius = 4  # zooms -> minRadius * 2**<depth_level>
 sensorBandwidth = 8  # fixed resolution of sensor
