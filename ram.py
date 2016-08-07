@@ -25,7 +25,7 @@ sensorArea = sensorBandwidth**2
 depth = 3  # zooms
 channels = 1  # grayscale
 totalSensorBandwidth = depth * sensorBandwidth * sensorBandwidth * channels
-batch_size = 10
+batch_size = 128
 
 hg_size = 128
 hl_size = 128
