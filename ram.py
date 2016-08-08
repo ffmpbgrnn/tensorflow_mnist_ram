@@ -1,4 +1,5 @@
 import tensorflow as tf
+import tensorflow.contrib.slim as slim
 import tf_mnist_loader
 import matplotlib.pyplot as plt
 import numpy as np
@@ -111,17 +112,29 @@ def get_glimpse(loc):
 
   glimpse_input = tf.reshape(glimpse_input, (batch_size, totalSensorBandwidth))
 
-  l_hl = weight_variable((2, hl_size))
+  # l_hl = weight_variable((2, hl_size))
   glimpse_hg = weight_variable((totalSensorBandwidth, hg_size))
 
   hg = tf.nn.relu(tf.matmul(glimpse_input, glimpse_hg))
-  hl = tf.nn.relu(tf.matmul(loc, l_hl))
+  # hl = tf.nn.relu(tf.matmul(loc, l_hl))
 
   hg_g = weight_variable((hg_size, g_size))
-  hl_g = weight_variable((hl_size, g_size))
+  # hl_g = weight_variable((hl_size, g_size))
 
-  g = tf.nn.relu(tf.matmul(hg, hg_g) + tf.matmul(hl, hl_g))
-
+  # g = tf.nn.relu(tf.matmul(hg, hg_g) + tf.matmul(hl, hl_g))
+  g_l = slim.fully_connected(
+    loc,
+    hl_size,
+    activation_fn=tf.nn.relu,
+    scope="gl_loc_fc0"
+  )
+  g_l = slim.fully_connected(
+    g_l,
+    g_size,
+    activation_fn=None,
+    scope="gl_loc_fc1",
+  )
+  g = tf.nn.relu(hg_g + g_l)
   return g
 
 
