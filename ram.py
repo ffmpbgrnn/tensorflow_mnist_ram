@@ -150,20 +150,22 @@ def get_next_input(output, i):
 
 
 def model():
-  initial_loc = tf.random_uniform((batch_size, 2), minval=-1, maxval=1)
+  with tf.variable_scope('THE_MODEL') as scope:
+    initial_loc = tf.random_uniform((batch_size, 2), minval=-1, maxval=1)
+    with tf.variable_scope("loop_function"):
+      initial_glimpse = get_glimpse(initial_loc)
 
-  initial_glimpse = get_glimpse(initial_loc)
+    lstm_cell = rnn_cell.LSTMCell(cell_size, g_size, num_proj=cell_out_size)
 
-  lstm_cell = rnn_cell.LSTMCell(cell_size, g_size, num_proj=cell_out_size)
+    initial_state = lstm_cell.zero_state(batch_size, tf.float32)
 
-  initial_state = lstm_cell.zero_state(batch_size, tf.float32)
+    inputs = [initial_glimpse]
+    inputs.extend([0] * (glimpses - 1))
 
-  inputs = [initial_glimpse]
-  inputs.extend([0] * (glimpses - 1))
-
-  outputs, _ = seq2seq.rnn_decoder(
-      inputs, initial_state, lstm_cell, loop_function=get_next_input)
-  get_next_input(outputs[-1], 0)
+    outputs, _ = seq2seq.rnn_decoder(
+        inputs, initial_state, lstm_cell, loop_function=get_next_input, scope=scope)
+    with tf.variable_scope("loop_function", reuse=True):
+      get_next_input(outputs[-1], 0)
 
   return outputs
 
